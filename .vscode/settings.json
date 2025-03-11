@@ -1,0 +1,48 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.wordWrapColumn": 80
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.wordWrapColumn": 80
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.wordWrapColumn": 80
+    },
+    "[css][scss][less]": {
+      "editor.defaultFormatter": "vscode.css-language-features"
+    }
+  }
+  
+  /*{
+    "window.autoDetectColorScheme": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "workbench.editor.limit.value": 6,
+    "workbench.editor.limit.enabled": true,
+    "files.autoSave": "onFocusChange",
+    "editor.fontFamily": "CommitMono",
+    "editor.fontLigatures": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "workbench.preferredDarkColorTheme": "Xcode Classic (Dark)",
+    "editor.renderWhitespace": "all",
+    "workbench.preferredLightColorTheme": "Xcode Classic (Light)",
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+    "editor.linkedEditing": true
+  }*/
