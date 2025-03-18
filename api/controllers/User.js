@@ -6,7 +6,6 @@ exports.registerUser = async (req, res) => {
   const isUserExist = await User.findOne({
     email: req.body.email.toLowerCase(),
   });
-  console.log(isUserExist);
   if (isUserExist) {
     return res.status(400).json({
       message: `L'utilisateur ${req.body.email} existe déjà`,
@@ -82,7 +81,7 @@ exports.loginUser = async (req, res, next) => {
           res.status(200).json(response);
         } else {
           return res.status(401).json({
-            message: "Votre mot de passe est éronné",
+            message: "Votre mot de passe est incorrect",
           });
         }
       });

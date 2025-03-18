@@ -3,11 +3,12 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 
 exports.postBook = (req, res, next) => {
-  console.log(req.body.book);
   const bookObject = JSON.parse(req.body.book);
   delete bookObject._id;
+  delete bookObject.userId;
   const book = new Book({
     ...bookObject,
+    userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
       req.file.filename
     }`,
@@ -30,16 +31,14 @@ exports.getBooks = async (req, res, next) => {
 };
 
 exports.getOneBook = async (req, res, next) => {
-  /*Book.findById(req.params.id)
+  Book.findById(req.params.id)
     .then((book) => res.status(200).json(book))
     .catch((error) => {
-      console.log(error.message);
       res.status(400).json({ error });
-    }); */
+    });
 };
 
 exports.bestRatingBooks = async (req, res, next) => {
-  console.log("Texte");
   Book.find({})
     .sort({ averageRating: 1 })
     .limit(3)
@@ -47,18 +46,8 @@ exports.bestRatingBooks = async (req, res, next) => {
       return res.status(200).json(books);
     })
     .catch((error) => {
-      console.log(error.message);
       res.status(400).json({ error });
     });
-  /*Book.find()
-    .then((books) => {
-      const booksArray = [books];
-      console.log(booksArray);
-      booksArray.sort((a, b) => a.averageRating - b.averageRating);
-      var bestBooks = booksArray.slice(0, 2);
-      return res.status(200).json(bestBooks);
-    })
-    .catch((error) => res.status(404).json({ error })); */
 };
 
 exports.updateBook = async (req, res, next) => {
@@ -71,27 +60,37 @@ exports.updateBook = async (req, res, next) => {
       }
     : { ...req.body };
 
+  delete bookObject._userId;
+
   Book.findOne({ _id: req.params.id }).then((book) => {
-    Book.updateOne(
-      { _id: req.params.id },
-      { ...bookObject, _id: req.params.id }
-    )
-      .then(() => res.status(200).json({ message: "Livre modifié !" }))
-      .catch((error) => res.status(401).json({ error }));
+    if (book.userId != req.auth.userId) {
+      res.status(401).json({ message: "Not authorized" });
+    } else {
+      Book.updateOne(
+        { _id: req.params.id },
+        { ...bookObject, _id: req.params.id }
+      )
+        .then(() => res.status(200).json({ message: "Livre modifié !" }))
+        .catch((error) => res.status(401).json({ error }));
+    }
   });
 };
 
 exports.deleteBook = async (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
-      const filename = book.imageUrl.split("/images/")[1];
-      fs.unlink(`images/${filename}`, () => {
-        Book.deleteOne({ _id: req.params.id })
-          .then(() => {
-            res.status(200).json({ message: "Livre supprimé !" });
-          })
-          .catch((error) => res.status(401).json({ error }));
-      });
+      if (book.userId != req.auth.userId) {
+        res.status(401).json({ message: "Not authorized" });
+      } else {
+        const filename = book.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, () => {
+          Book.deleteOne({ _id: req.params.id })
+            .then(() => {
+              res.status(200).json({ message: "Livre supprimé !" });
+            })
+            .catch((error) => res.status(401).json({ error }));
+        });
+      }
     })
     .catch((error) => {
       res.status(500).json({ error });
@@ -121,7 +120,6 @@ exports.postRating = async (req, res, next) => {
         });
     })
     .catch((error) => {
-      console.log(error.message);
       res.status(400).json({ error });
     });
 };
